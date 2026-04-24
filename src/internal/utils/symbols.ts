@@ -1,0 +1,11 @@
+export const SCHEMA_ASSERT = Symbol('SCHEMA_ASSERT');
+export const SCHEMA_DEF = Symbol('SCHEMA_DEF');
+export const SCHEMA_THROW_SYNC = Symbol('SCHEMA_THROW_SYNC');
+export const SCHEMA_THROW_ISSUES = Symbol('SCHEMA_THROW_ISSUES');
+export const SCHEMA_PARSE = Symbol('SCHEMA_PARSE');
+export const SCHEMA_PARSE_ASYNC = Symbol('SCHEMA_PARSE_ASYNC');
+export const SCHEMA_PATTERN = Symbol('SCHEMA_PATTERN');
+export const EVALUATING = Symbol('EVALUATING');
+export const DEF_TYPE = Symbol('DEF_TYPE');
+export const INPUT_TYPE = Symbol('INPUT_TYPE');
+export const OUTPUT_TYPE = Symbol('OUTPUT_TYPE');

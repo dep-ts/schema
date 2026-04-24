@@ -1,0 +1,40 @@
+{
+  "name": "@dep/schema",
+  "version": "1.0.0",
+  "exports": "./src/mod.ts",
+  "compilerOptions": {
+    "strict": true
+  },
+  "imports": {
+    "@/": "./src/",
+    "@core/": "./src/core/",
+    "@internal/": "./src/internal/",
+    "@internal/types": "./src/internal/types/mod.ts",
+    "@dep/assert": "jsr:@dep/assert@^1.4.0"
+  },
+  "tasks": {
+    "start": "deno run --allow-net src/mod.ts",
+    "build": "deno run --allow-read src/build.ts",
+    "dev": "deno run --allow-env --allow-net --watch src/mod.ts",
+    "check-types": "deno check src/**/*.ts && deno publish --check",
+    "lint": "deno lint",
+    "fmt": "deno fmt",
+    "clean": "rm -rf dist",
+    "pack": "deno compile -A -o schema ./cli.ts",
+    "prerelease": "deno lint && deno fmt",
+    "release": "deno task prerelease && jsr publish ./"
+  },
+  "lint": {
+    "rules": {
+      "tags": ["recommended"]
+    }
+  },
+  "fmt": {
+    "useTabs": false,
+    "lineWidth": 80,
+    "indentWidth": 2,
+    "singleQuote": true,
+    "semiColons": true,
+    "trailingCommas": "onlyMultiLine"
+  }
+}
