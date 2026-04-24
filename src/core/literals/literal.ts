@@ -12,7 +12,7 @@ import {
 import { escapeRegex } from '@internal/utils/regex.ts';
 
 /** Schema for validating a single literal value. */
-export class LiteralSchema<T extends Literal> extends Schema<T> {
+export class LiteralSchema<T extends Literal = Literal> extends Schema<T> {
   public override readonly kind: SchemaKind = 'LiteralSchema';
   declare [DEF_TYPE]: InternalLiteralDef<T>;
 

@@ -1,19 +1,40 @@
 // deno-lint-ignore-file no-explicit-any
-import { Ref } from './utils.ts';
+import { IsAny, Prettify, Ref } from './utils.ts';
 import { InternalSchemaDef, SchemaDef, SomeSchema } from './schema.ts';
 import { Flatten } from './utils.ts';
+import { OptionalSchema } from '@core/utilities/schema.ts';
 
 export type ObjectShape = Record<string, SomeSchema>;
 
-export type InfertObjectOutput<S extends Partial<ObjectShape>> = {
-  [K in keyof S]-?: S[K] extends SomeSchema ? S[K][Ref<'OUTPUT'>] : never;
-};
+export type InferObject<
+  T extends ObjectShape,
+  R extends 'OUTPUT' | 'INPUT',
+> = string extends keyof T
+  ? IsAny<T[keyof T]> extends true ? Record<string, unknown>
+  : Record<string, T[keyof T][Ref<R>]>
+  : keyof T extends never ? Record<string, never>
+  : Prettify<
+    & {
+      -readonly [
+        k in keyof T as T[k] extends OptionalSchema<any> ? never
+          : k
+      ]: T[k][Ref<R>];
+    }
+    & {
+      -readonly [
+        k in keyof T as T[k] extends OptionalSchema<any> ? k
+          : never
+      ]?: T[k][Ref<R>];
+    }
+  >;
 
-export type InfertObjectInput<S extends Partial<ObjectShape>> = {
-  [K in keyof S]-?: S[K] extends SomeSchema ? S[K][Ref<'INPUT'>] : never;
-};
+export type InfertObjectOutput<T extends ObjectShape> = InferObject<
+  T,
+  'OUTPUT'
+>;
+export type InfertObjectInput<T extends ObjectShape> = InferObject<T, 'INPUT'>;
 
-export interface ObjectDef<T extends Partial<ObjectShape>> extends
+export interface ObjectDef<T extends ObjectShape> extends
   SchemaDef<
     InfertObjectOutput<T>
   > {
@@ -22,7 +43,7 @@ export interface ObjectDef<T extends Partial<ObjectShape>> extends
   catchall?: SomeSchema;
 }
 
-export type InternalObjectDef<T extends Partial<ObjectShape>> =
+export type InternalObjectDef<T extends ObjectShape> =
   & ObjectDef<T>
   & InternalSchemaDef<InfertObjectOutput<T>>;
 

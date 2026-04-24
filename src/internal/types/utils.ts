@@ -1,3 +1,4 @@
+// deno-lint-ignore-file ban-types
 import { SomeSchema } from '@internal/types/schema.ts';
 import { DEF_TYPE, INPUT_TYPE, OUTPUT_TYPE } from '@internal/utils/symbols.ts';
 
@@ -28,6 +29,20 @@ export type Exactly<T, X> = T & Record<Exclude<keyof X, keyof T>, never>;
 export type NoUndefined<T> = T extends undefined ? never : T;
 
 export type DistributeSchema<T> = T extends unknown ? SomeSchema<T, T> : never;
+
+export type IsAny<T> = 0 extends 1 & T ? true : false;
+
+export type Prettify<T> =
+  & {
+    [K in keyof T]: T[K];
+  }
+  & {};
+
+export type Writeable<T> =
+  & {
+    -readonly [P in keyof T]: T[P];
+  }
+  & {};
 
 export type Ref<T extends 'OUTPUT' | 'INPUT' | 'DEF'> = {
   OUTPUT: typeof OUTPUT_TYPE;

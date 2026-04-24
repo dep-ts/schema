@@ -18,6 +18,7 @@ import type {
   SchemaIssue,
   SchemaKind,
   SomeSchema,
+  Writeable,
 } from '@internal/types';
 
 import { isObject } from '@internal/is/object.ts';
@@ -47,10 +48,9 @@ import { _omit } from '@internal/utils/omit.ts';
 import { defineLazy } from '@internal/utils/define.ts';
 
 /** Schema for validating object values. */
-export class ObjectSchema<TShape extends Partial<ObjectShape>> extends Schema<
-  InfertObjectOutput<TShape>,
-  InfertObjectInput<TShape>
-> {
+export class ObjectSchema<
+  TShape extends ObjectShape = ObjectShape,
+> extends Schema<InfertObjectOutput<TShape>, InfertObjectInput<TShape>> {
   public override readonly kind: SchemaKind = 'ObjectSchema';
   declare [DEF_TYPE]: InternalObjectDef<TShape>;
 
@@ -254,9 +254,7 @@ export class ObjectSchema<TShape extends Partial<ObjectShape>> extends Schema<
    */
   partial(): ObjectSchema<
     {
-      [k in keyof InfertObjectOutput<TShape>]: OptionalSchema<
-        InfertObjectOutput<TShape>[k]
-      >;
+      [k in keyof TShape]: OptionalSchema<TShape[k]>;
     }
   >;
 
@@ -264,9 +262,8 @@ export class ObjectSchema<TShape extends Partial<ObjectShape>> extends Schema<
     mask: M & Record<Exclude<keyof M, keyof TShape>, never>,
   ): ObjectSchema<
     {
-      [k in keyof TShape]: k extends keyof M
-        ? OptionalSchema<InfertObjectOutput<TShape>[k]>
-        : InfertObjectOutput<TShape>[k];
+      [k in keyof TShape]: k extends keyof M ? OptionalSchema<TShape[k]>
+        : TShape[k];
     }
   >;
 
@@ -290,7 +287,7 @@ export class ObjectSchema<TShape extends Partial<ObjectShape>> extends Schema<
     {
       [k in keyof TShape]-?: k extends keyof M
         ? NonOptionalSchema<Exclude<TShape[k], undefined>>
-        : InfertObjectOutput<TShape>[k];
+        : TShape[k];
     }
   >;
 
@@ -329,12 +326,14 @@ export class ObjectSchema<TShape extends Partial<ObjectShape>> extends Schema<
   }
 
   #parseContext(data: unknown): {
-    input: InfertObjectOutput<TShape>;
+    input: Record<string, unknown>;
     shape: ObjectShape;
     catchall: SomeSchema<any> | undefined;
     issues: Array<Partial<SchemaIssue>>;
   } {
-    const input = this[SCHEMA_ASSERT](isObject(data), { received: data });
+    const input = this[SCHEMA_ASSERT](isObject(data), {
+      received: data,
+    }) as Record<string, unknown>;
     const { shape, catchall } = this[SCHEMA_DEF];
     const issues: Array<Partial<SchemaIssue>> = [];
 
@@ -358,22 +357,21 @@ export class ObjectSchema<TShape extends Partial<ObjectShape>> extends Schema<
  *   name: s.string(),
  * });
  */
-export function object<
-  TShape extends Partial<ObjectShape>,
->(): ObjectSchema<TShape>;
-
-export function object<TShape extends Partial<ObjectShape>>(
+export function object<TShape extends ObjectShape>(): ObjectSchema<
+  Writeable<TShape>
+>;
+export function object<TShape extends ObjectShape>(
   shape?: TShape,
-): ObjectSchema<TShape>;
+): ObjectSchema<Writeable<TShape>>;
 
-export function object<TShape extends Partial<ObjectShape>>(
-  shape?: TShape,
-  message?: string,
-): ObjectSchema<TShape>;
-
-export function object<TShape extends Partial<ObjectShape>>(
+export function object<TShape extends ObjectShape>(
   shape?: TShape,
   message?: string,
-): ObjectSchema<TShape> {
+): ObjectSchema<Writeable<TShape>>;
+
+export function object<TShape extends ObjectShape>(
+  shape?: TShape,
+  message?: string,
+): ObjectSchema<Writeable<TShape>> {
   return new ObjectSchema({ type: 'object', shape, message });
 }

@@ -20,8 +20,8 @@ import { prefixIssues } from '@internal/utils/format.ts';
 
 /** Schema for validating Map objects. */
 export class MapSchema<
-  Key extends SomeSchema,
-  Value extends SomeSchema,
+  Key extends SomeSchema = SomeSchema,
+  Value extends SomeSchema = SomeSchema,
 > extends Schema<
   Map<Key[Ref<'OUTPUT'>], Value[Ref<'OUTPUT'>]>,
   Map<Key[Ref<'INPUT'>], Value[Ref<'INPUT'>]>

@@ -20,7 +20,7 @@ import { Schema } from '@core/utilities/schema.ts';
 import { prefixIssues } from '@internal/utils/format.ts';
 
 /** Schema for validating Set objects. */
-export class SetSchema<Value extends SomeSchema> extends Schema<
+export class SetSchema<Value extends SomeSchema = SomeSchema> extends Schema<
   Set<Value[Ref<'OUTPUT'>]>,
   Set<Value[Ref<'INPUT'>]>
 > {

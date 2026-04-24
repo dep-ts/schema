@@ -16,7 +16,7 @@ import {
 } from '@internal/utils/symbols.ts';
 
 /** Schema for validating values with a lazily evaluated schema. */
-export class LazySchema<T extends SomeSchema> extends Schema<
+export class LazySchema<T extends SomeSchema = SomeSchema> extends Schema<
   T[Ref<'OUTPUT'>],
   T[Ref<'INPUT'>]
 > {

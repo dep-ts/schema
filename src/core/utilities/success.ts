@@ -16,7 +16,7 @@ import {
 import { SchemaError } from '@core/utilities/error.ts';
 
 /** Schema that validates if the inner schema is successful and returns true. */
-export class SuccessSchema<T extends SomeSchema> extends Schema<
+export class SuccessSchema<T extends SomeSchema = SomeSchema> extends Schema<
   T[Ref<'OUTPUT'>],
   T[Ref<'INPUT'>]
 > {

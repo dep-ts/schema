@@ -8,7 +8,7 @@ import { ObjectSchema } from '@core/structural/object.ts';
 import { assignProp } from '@internal/utils/prop.ts';
 
 export function _required<
-  TShape extends Partial<ObjectShape>,
+  TShape extends ObjectShape,
   M extends Mask<keyof TShape>,
 >(
   Class: typeof NonOptionalSchema<SomeSchema>,

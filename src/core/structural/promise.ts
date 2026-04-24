@@ -15,7 +15,7 @@ import {
 } from '@internal/utils/symbols.ts';
 
 /** Schema for validating Promise objects. */
-export class PromiseSchema<T extends SomeSchema> extends Schema<
+export class PromiseSchema<T extends SomeSchema = SomeSchema> extends Schema<
   Promise<T[Ref<'OUTPUT'>]>,
   Promise<T[Ref<'INPUT'>]>
 > {

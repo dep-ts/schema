@@ -24,7 +24,7 @@ export function prefixRecordIssues(
   }));
 }
 
-export function prefixCatchallIssues<TShape extends Partial<ObjectShape>>(opt: {
+export function prefixCatchallIssues<TShape extends ObjectShape>(opt: {
   issues: SchemaIssue[];
   shape: ObjectShape;
   input: InfertObjectOutput<TShape>;

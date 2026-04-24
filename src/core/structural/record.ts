@@ -34,8 +34,8 @@ function normalize(key: PropertyKey): string | symbol {
 
 /** Schema for validating record (dictionary) objects. */
 export class RecordSchema<
-  Key extends SomeSchema,
-  Value extends SomeSchema,
+  Key extends SomeSchema = SomeSchema,
+  Value extends SomeSchema = SomeSchema,
 > extends Schema<
   InfertRecordOutput<Key, Value>,
   InfertRecordInput<Key, Value>

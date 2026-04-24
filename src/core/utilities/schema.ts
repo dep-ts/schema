@@ -518,10 +518,9 @@ export abstract class Schema<TOutput = any, TInput = TOutput> {
 }
 
 /** Schema for validating arrays of values. */
-export class ArraySchema<Element extends SomeSchema> extends Schema<
-  Array<Element[Ref<'OUTPUT'>]>,
-  Array<Element[Ref<'INPUT'>]>
-> {
+export class ArraySchema<
+  Element extends SomeSchema = SomeSchema,
+> extends Schema<Array<Element[Ref<'OUTPUT'>]>, Array<Element[Ref<'INPUT'>]>> {
   public override readonly kind: SchemaKind = 'ArraySchema';
   declare [DEF_TYPE]: InternalArrayDef<Element>;
 
@@ -603,8 +602,8 @@ export function array<Element extends SomeSchema>(
 
 /** Schema that validates input against both schemas. */
 export class IntersectionSchema<
-  T extends SomeSchema,
-  I extends SomeSchema,
+  T extends SomeSchema = SomeSchema,
+  I extends SomeSchema = SomeSchema,
 > extends Schema<
   T[Ref<'OUTPUT'>] & I[Ref<'OUTPUT'>],
   T[Ref<'INPUT'>] & I[Ref<'INPUT'>]
@@ -713,7 +712,9 @@ export class IntersectionSchema<
     if (!merged.success) {
       throw new Error(
         `Unmergable intersection. Error path: ${
-          JSONX.stringify(merged.errorPath)
+          JSONX.stringify(
+            merged.errorPath,
+          )
         }`,
       );
     }
@@ -746,7 +747,7 @@ export function intersection<T extends SomeSchema, I extends SomeSchema>(
 }
 
 /** Schema that supplies a default value when input is undefined. */
-export class DefaultSchema<T extends SomeSchema> extends Schema<
+export class DefaultSchema<T extends SomeSchema = SomeSchema> extends Schema<
   T[Ref<'OUTPUT'>],
   T[Ref<'INPUT'>]
 > {
@@ -806,7 +807,7 @@ function _default<T extends SomeSchema = SomeSchema>(
 export { _default as default };
 
 /** Schema that replaces undefined input before parsing. */
-export class PrefaultSchema<T extends SomeSchema> extends Schema<
+export class PrefaultSchema<T extends SomeSchema = SomeSchema> extends Schema<
   T[Ref<'OUTPUT'>],
   T[Ref<'INPUT'>]
 > {
@@ -908,7 +909,7 @@ export function transform<T extends SomeSchema, U>(
 }
 
 /** Schema that accepts undefined and validates non-undefined values. */
-export class OptionalSchema<T extends SomeSchema> extends Schema<
+export class OptionalSchema<T extends SomeSchema = SomeSchema> extends Schema<
   T[Ref<'OUTPUT'>] | undefined,
   T[Ref<'INPUT'>] | undefined
 > {
@@ -960,7 +961,7 @@ export function optional<T extends SomeSchema>(
 }
 
 /** Schema that accepts null and validates non-null values. */
-export class NullableSchema<T extends SomeSchema> extends Schema<
+export class NullableSchema<T extends SomeSchema = SomeSchema> extends Schema<
   T[Ref<'OUTPUT'>] | null,
   T[Ref<'INPUT'>] | null
 > {
@@ -1106,7 +1107,7 @@ export function union<const T extends readonly SomeSchema[]>(
 }
 
 /** Schema that freezes parsed output as readonly. */
-export class ReadonlySchema<T extends SomeSchema> extends Schema<
+export class ReadonlySchema<T extends SomeSchema = SomeSchema> extends Schema<
   Readonly<T[Ref<'OUTPUT'>]>,
   Readonly<T[Ref<'INPUT'>]>
 > {
@@ -1165,7 +1166,9 @@ export function readonly<T extends SomeSchema>(
 }
 
 /** Schema that rejects undefined input even when the inner schema accepts it. */
-export class NonOptionalSchema<T extends SomeSchema> extends Schema<
+export class NonOptionalSchema<
+  T extends SomeSchema = SomeSchema,
+> extends Schema<
   Exclude<T[Ref<'OUTPUT'>], undefined>,
   Exclude<T[Ref<'INPUT'>], undefined>
 > {
@@ -1238,7 +1241,7 @@ export function nonoptional<T extends SomeSchema>(
 }
 
 /** Schema that returns a fallback value when validation fails. */
-export class CatchSchema<T extends SomeSchema> extends Schema<
+export class CatchSchema<T extends SomeSchema = SomeSchema> extends Schema<
   T[Ref<'OUTPUT'>],
   T[Ref<'INPUT'>]
 > {
@@ -1327,10 +1330,9 @@ function _catch<T extends SomeSchema>(
 export { _catch as catch };
 
 /** Exact optional schema that preserves the inner schema’s pattern. */
-export class ExactOptionalSchema<T extends SomeSchema> extends Schema<
-  T[Ref<'OUTPUT'>],
-  T[Ref<'INPUT'>]
-> {
+export class ExactOptionalSchema<
+  T extends SomeSchema = SomeSchema,
+> extends Schema<T[Ref<'OUTPUT'>], T[Ref<'INPUT'>]> {
   public override readonly kind: SchemaKind = 'ExactOptionalSchema';
   declare [DEF_TYPE]: InternalOptionalDef<T>;
 
